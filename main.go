@@ -96,17 +96,17 @@ func createParticles(n int, particles []*Particle) []*Particle {
 		var x, y float64
 		radius := 30
 
-		x = float64(rand.Intn(WINDOW_WIDTH * 2))
-		y = float64(rand.Intn(WINDOW_HEIGHT * 2))
+		x = float64(rand.Intn(WINDOW_WIDTH*2 - radius*2))
+		y = float64(rand.Intn(WINDOW_HEIGHT*2 - radius*2))
 		// Making sure two particle do not spawn at same space.
 		for _, pr := range particles {
-			dx := pr.x - x
-			dy := pr.y - y
+			dx := (pr.x + float64(pr.radius)) - (x + float64(radius))
+			dy := (pr.y + float64(pr.radius)) - (y + float64(radius))
 			dst := math.Sqrt(dx*dx + dy*dy)
 
-			if dst-2 <= float64(radius)+float64(pr.radius) {
-				x = float64(rand.Intn(WINDOW_WIDTH * 2))
-				y = float64(rand.Intn(WINDOW_HEIGHT * 2))
+			if dst <= float64(radius)+float64(pr.radius) {
+				x = float64(rand.Intn(WINDOW_WIDTH*2 - radius*2))
+				y = float64(rand.Intn(WINDOW_HEIGHT*2 - radius*2))
 			}
 
 		}

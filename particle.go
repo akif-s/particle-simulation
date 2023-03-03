@@ -43,8 +43,8 @@ func (P *Particle) checkCollision(particles []*Particle) {
 			continue
 		}
 
-		dx := p.x - P.x
-		dy := p.y - P.y
+		dx := (p.x + float64(p.radius)) - (P.x + float64(P.radius))
+		dy := (p.y + float64(p.radius)) - (P.y + float64(P.radius))
 		distance := math.Sqrt(dx*dx + dy*dy)
 
 		if distance <= float64(p.radius)+float64(P.radius) {
