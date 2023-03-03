@@ -49,6 +49,8 @@ func (P *Particle) checkCollision(particles []*Particle) {
 
 		if distance <= float64(p.radius)+float64(P.radius) {
 			// X-Axis Calculations
+			// Capital P is current particle that checking the collision
+			// Lower   p is the particle that is been checked
 			tmPX := P.vX
 			tmpX := p.vX
 
