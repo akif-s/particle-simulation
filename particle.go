@@ -33,10 +33,13 @@ func (p *Particle) update(particles []*Particle) {
 	p.y += p.vY
 
 	go p.detectEdges()
-	p.checkCollision(particles)
+	isCollided, p2 := p.checkCollision(particles)
+	if isCollided {
+		p.CalculateNewVelocity(p2)
+	}
 }
 
-func (P *Particle) checkCollision(particles []*Particle) {
+func (P *Particle) checkCollision(particles []*Particle) (bool, *Particle) {
 
 	for _, p := range particles {
 		if p.id == P.id {
@@ -48,23 +51,28 @@ func (P *Particle) checkCollision(particles []*Particle) {
 		distance := math.Sqrt(dx*dx + dy*dy)
 
 		if distance <= float64(p.radius)+float64(P.radius) {
-			// X-Axis Calculations
-			// Capital P is current particle that checking the collision
-			// Lower   p is the particle that is been checked
-			tmPX := P.vX
-			tmpX := p.vX
-
-			P.vX = tmPX*(P.mass-p.mass)/(P.mass+p.mass) + tmpX*(2*p.mass)/(P.mass+p.mass)
-			p.vX = tmPX*(2*P.mass)/(p.mass+P.mass) + tmpX*(p.mass-P.mass)/(p.mass+P.mass)
-
-			// Y-Axis Calculations
-			tmPY := P.vY
-			tmpY := p.vY
-			P.vY = tmPY*(P.mass-p.mass)/(P.mass+p.mass) + tmpY*(2*p.mass)/(P.mass+p.mass)
-			p.vY = tmPY*(2*P.mass)/(p.mass+P.mass) + tmpY*(p.mass-P.mass)/(p.mass+P.mass)
+			return true, p
 		}
 	}
+	return false, nil
+}
 
+// Calculate the velocities after collision
+func (P *Particle) CalculateNewVelocity(p *Particle) {
+	// X-Axis Calculations
+	// Capital P is current particle that checking the collision
+	// Lower   p is the particle that is been checked
+	tmPX := P.vX
+	tmpX := p.vX
+
+	P.vX = tmPX*(P.mass-p.mass)/(P.mass+p.mass) + tmpX*(2*p.mass)/(P.mass+p.mass)
+	p.vX = tmPX*(2*P.mass)/(p.mass+P.mass) + tmpX*(p.mass-P.mass)/(p.mass+P.mass)
+
+	// Y-Axis Calculations
+	tmPY := P.vY
+	tmpY := p.vY
+	P.vY = tmPY*(P.mass-p.mass)/(P.mass+p.mass) + tmpY*(2*p.mass)/(P.mass+p.mass)
+	p.vY = tmPY*(2*P.mass)/(p.mass+P.mass) + tmpY*(p.mass-P.mass)/(p.mass+P.mass)
 }
 
 func (p *Particle) detectEdges() {

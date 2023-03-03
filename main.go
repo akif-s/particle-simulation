@@ -1,10 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"image"
 	"image/color"
 	"log"
-	"math"
 	"math/rand"
 	"os"
 	"time"
@@ -45,7 +45,8 @@ var particles []*Particle
 func loop(w *app.Window) error {
 	var ops op.Ops
 
-	particles = createParticles(50, particles)
+	particles = createParticles(500, particles)
+	fmt.Printf("Total %d particles corrected", count)
 
 	var keytag struct{}
 
@@ -91,30 +92,31 @@ func loop(w *app.Window) error {
 	return nil
 }
 
+var count int
+
 func createParticles(n int, particles []*Particle) []*Particle {
 	for i := 0; i < n; i++ {
 		var x, y float64
-		radius := 30
+		radius := 10
 
 		x = float64(rand.Intn(WINDOW_WIDTH*2 - radius*2))
 		y = float64(rand.Intn(WINDOW_HEIGHT*2 - radius*2))
-		// Making sure two particle do not spawn at same space.
-		for _, pr := range particles {
-			dx := (pr.x + float64(pr.radius)) - (x + float64(radius))
-			dy := (pr.y + float64(pr.radius)) - (y + float64(radius))
-			dst := math.Sqrt(dx*dx + dy*dy)
-
-			if dst <= float64(radius)+float64(pr.radius) {
-				x = float64(rand.Intn(WINDOW_WIDTH*2 - radius*2))
-				y = float64(rand.Intn(WINDOW_HEIGHT*2 - radius*2))
-			}
-
-		}
 
 		//Randomizing velocities
-		vy := float64(rand.Intn(20) - 10)
-		vx := float64(rand.Intn(20) - 10)
+		vy := 0. //float64(rand.Intn(20) - 10)
+		vx := 0. //float64(rand.Intn(20) - 10)
 		p := newParticle(x, y, vx, vy, 1, radius, color.NRGBA{R: 95, G: 190, B: 190, A: 0xff}, i)
+
+		// Making sure two particle do not spawn at same space.
+		for {
+			if isColliding, _ := p.checkCollision(particles); !isColliding {
+				break
+			}
+			p.x = float64(rand.Intn(WINDOW_WIDTH*2 - radius*2))
+			p.y = float64(rand.Intn(WINDOW_HEIGHT*2 - radius*2))
+			fmt.Println("Corrected: ", p.id)
+			count++
+		}
 		particles = append(particles, p)
 	}
 	return particles
