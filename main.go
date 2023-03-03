@@ -103,8 +103,8 @@ func createParticles(n int, particles []*Particle) []*Particle {
 		y = float64(rand.Intn(WINDOW_HEIGHT*2 - radius*2))
 
 		//Randomizing velocities
-		vy := 0. //float64(rand.Intn(20) - 10)
-		vx := 0. //float64(rand.Intn(20) - 10)
+		vy := float64(rand.Intn(20) - 10)
+		vx := float64(rand.Intn(20) - 10)
 		p := newParticle(x, y, vx, vy, 1, radius, color.NRGBA{R: 95, G: 190, B: 190, A: 0xff}, i)
 
 		// Making sure two particle do not spawn at same space.
